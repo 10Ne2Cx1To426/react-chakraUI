@@ -1,17 +1,7 @@
 import { memo, useCallback, useEffect, VFC } from "react";
 import {
   Center,
-  FormControl,
-  FormLabel,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   Spinner,
-  Stack,
   useDisclosure,
   Wrap,
   WrapItem
@@ -20,13 +10,19 @@ import {
 import { UserCard } from "../organisms/user/UserCard";
 import { useAllUsers } from "../../hooks/useAllUsers";
 import { UserDetailModal } from ".././organisms/user/UserDetailModal";
+import { useSelectUser } from "../../hooks/useSelectUser";
 
 export const UserManagement: VFC = memo(() => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { getUsers, users, loading } = useAllUsers();
+  const { onSelectUser, selectedUser } = useSelectUser();
+  console.log(selectedUser);
+
   useEffect(() => getUsers(), []);
 
-  const onClickUser = useCallback(() => onOpen(), []);
+  const onClickUser = useCallback((id: number) => {
+    onSelectUser({ id, users, onOpen });
+  }, []);
 
   return (
     <>
@@ -43,6 +39,7 @@ export const UserManagement: VFC = memo(() => {
                 userName={user.username}
                 fullName={user.name}
                 onClick={onClickUser}
+                id={user.id}
               />
             </WrapItem>
           ))}
